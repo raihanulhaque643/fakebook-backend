@@ -1,0 +1,22 @@
+{
+  "name": "myexpressapp",
+  "version": "1.0.0",
+  "description": "backend boiler plate first draft",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "env-cmd ./config/dev.env nodemon src/index.js"
+  },
+  "author": "raihanulhaque643",
+  "license": "ISC",
+  "devDependencies": {
+    "env-cmd": "^8.0.2",
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.6.4",
+    "mongoose": "^5.11.18"
+  }
+}
