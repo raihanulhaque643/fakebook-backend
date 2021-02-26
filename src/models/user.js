@@ -1,7 +1,15 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const validator = require('validator')
 
 const userSchema = new mongoose.Schema({
-    name: {
+    firstName: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    lastName: {
         type: String,
         required: true,
         trim: true
@@ -35,6 +43,12 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
         trim: true,
+        required: true,
+        validate(value) {
+            if (value.length !== 11) {
+                throw new Error('Invalid phone number. Phone number must be 11 digits.')
+            }
+        }
     },
     tokens: [{
         token: {
@@ -47,6 +61,28 @@ const userSchema = new mongoose.Schema({
     }
 }, {
     timestamps: true
+})
+
+userSchema.methods.generateAuthToken = async function () {
+    const user = this;
+    const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
+
+    user.tokens = user.tokens.concat({ token });
+    await user.save();
+
+    return token;
+}
+
+// Hash the plain text password before saving
+userSchema.pre('save', async function (next) {
+    const user = this;
+    
+    if (user.isModified('password')) {
+        user.password = await bcrypt.hash(user.password, 8)
+    }
+
+    next();
+
 })
 
 const User = mongoose.model('User', userSchema)
