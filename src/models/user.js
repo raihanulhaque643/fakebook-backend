@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const validator = require('validator')
+const beautifyUnique = require('mongoose-beautiful-unique-validation')
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -16,7 +17,7 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        unique: true,
+        unique: 'Email already registered to a user.',
         required: true,
         trim: true,
         lowercase: true,
@@ -84,6 +85,8 @@ userSchema.pre('save', async function (next) {
     next();
 
 })
+
+userSchema.plugin(beautifyUnique);
 
 const User = mongoose.model('User', userSchema)
 
