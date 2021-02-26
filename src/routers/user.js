@@ -1,6 +1,7 @@
 const express = require('express')
 const router = new express.Router()
 const User = require('../models/user')
+const auth = require('../middleware/auth');
 
 router.post('/signup', async (req, res) => {
     const user = new User(req.body);
@@ -21,6 +22,10 @@ router.post('/signin', async (req, res) => {
     } catch (err) {
         res.status(400).send({error: err.message});
     }
+})
+
+router.post('/test', auth, async (req, res) => {
+    res.send('i am authenticated')
 })
 
 module.exports = router
