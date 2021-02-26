@@ -13,4 +13,14 @@ router.post('/signup', async (req, res) => {
     }
 })
 
+router.post('/signin', async (req, res) => {
+    try {
+        const user = await User.findByCredentials(req.body.email, req.body.password);
+        const token = await user.generateAuthToken();
+        res.send({ user, token });
+    } catch (err) {
+        res.status(400).send({error: err.message});
+    }
+})
+
 module.exports = router
