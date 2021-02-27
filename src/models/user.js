@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 const validator = require('validator')
 const beautifyUnique = require('mongoose-beautiful-unique-validation')
 
+// user data schema
 const userSchema = new mongoose.Schema({
     firstName: {
         type: String,
@@ -64,6 +65,7 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 })
 
+// remove password and token before returning json data to client
 userSchema.methods.toJSON = function () {
     const user = this;
     const userObject = user.toObject()
@@ -75,6 +77,7 @@ userSchema.methods.toJSON = function () {
     return userObject;
 }
 
+// look for registered user & check for correct password
 userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({ email })
 
@@ -91,6 +94,7 @@ userSchema.statics.findByCredentials = async (email, password) => {
     return user;
 }
 
+// create auth token and assign to user
 userSchema.methods.generateAuthToken = async function () {
     const user = this;
     const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET);
@@ -113,7 +117,7 @@ userSchema.pre('save', async function (next) {
 
 })
 
-userSchema.plugin(beautifyUnique);
+userSchema.plugin(beautifyUnique); //to expand mognoose error codes into meaningful messages
 
 const User = mongoose.model('User', userSchema)
 

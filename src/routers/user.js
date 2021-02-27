@@ -3,6 +3,7 @@ const router = new express.Router()
 const User = require('../models/user')
 const auth = require('../middleware/auth');
 
+// register new users to database
 router.post('/signup', async (req, res) => {
     const user = new User(req.body);
     try {
@@ -14,6 +15,7 @@ router.post('/signup', async (req, res) => {
     }
 })
 
+// log in existing users
 router.post('/signin', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password);
@@ -24,6 +26,7 @@ router.post('/signin', async (req, res) => {
     }
 })
 
+// test route
 router.post('/test', auth, async (req, res) => {
     res.send('i am authenticated')
 })
