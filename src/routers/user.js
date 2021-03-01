@@ -26,6 +26,18 @@ router.post('/signin', async (req, res) => {
     }
 })
 
+// logout user from all devices they've used
+router.post('/logoutAll', auth, async (req, res) => {
+    try {
+        req.user.tokens = [];
+        await req.user.save();
+
+        res.send();
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
 // test route
 router.post('/test', auth, async (req, res) => {
     res.send('i am authenticated')
