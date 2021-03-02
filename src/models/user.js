@@ -65,6 +65,12 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 })
 
+userSchema.virtual('opinions', {
+    ref: 'Opinion',
+    localField: '_id',
+    foreignField: 'owner'
+})
+
 // remove password and token before returning json data to client
 userSchema.methods.toJSON = function () {
     const user = this;
