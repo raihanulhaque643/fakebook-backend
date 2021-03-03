@@ -4,7 +4,7 @@ const Opinion = require('../models/opinion');
 const User = require('../models/user');
 const auth = require('../middleware/auth');
 
-// user can post their opinion
+// post an opinion
 router.post('/opinions', auth, async (req, res) => {
     const opinion = new Opinion({
         ...req.body,
@@ -47,6 +47,36 @@ router.get('/allOpinions', auth, async (req, res) => {
     } catch (e) {
         res.status(500).send();
     }
+})
+
+// update an opinion
+router.patch('/opinion/:id', auth, async (req, res) => {
+    const updates = Object.keys(req.body);
+    const allowedUpdates = ['description', 'opinionImage'];
+    const isValidOperation = updates.every((update) => {
+        return allowedUpdates.includes(update);
+    })
+
+    if (!isValidOperation) {
+        return res.status(400).send({ error: 'Invalid updates' })
+    }
+
+    const _id = req.params.id;
+    try {
+        const opinion = await Opinion.findOne({ _id: req.params.id, owner: req.user._id })
+        
+        if (!opinion) {
+            return res.status(404).send();
+        }
+
+        updates.forEach((update) => {
+            opinion[update] = req.body[update]
+        })
+        await opinion.save();
+        res.send(opinion);
+    } catch (e) {
+        res.status(400).send(e);
+    }   
 })
 
 // delete user's own opinion
