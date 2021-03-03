@@ -3,6 +3,8 @@ const router = new express.Router();
 const Opinion = require('../models/opinion');
 const User = require('../models/user');
 const auth = require('../middleware/auth');
+const multer = require('multer')
+const sharp = require('sharp')
 
 // post an opinion
 router.post('/opinions', auth, async (req, res) => {
@@ -52,7 +54,7 @@ router.get('/allOpinions', auth, async (req, res) => {
 // update an opinion
 router.patch('/opinion/:id', auth, async (req, res) => {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ['description', 'opinionImage'];
+    const allowedUpdates = ['description'];
     const isValidOperation = updates.every((update) => {
         return allowedUpdates.includes(update);
     })
@@ -90,6 +92,56 @@ router.delete('/opinions/:id', auth, async (req, res) => {
         res.send(opinion);
     } catch (e) {
         res.status(500).send(e);
+    }
+})
+
+// create multer instance
+const upload = multer({
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+            return cb(new Error('Please upload an image!'))
+        }
+
+        cb(undefined, true);
+    }
+})
+
+// post an opinion with image (multi-part form)
+// req.body will contain text fields and req.file will have time image file
+router.post('/opinions/me', auth, upload.single('opinionImage'), async (req, res) => {
+    const buffer = await sharp(req.file.buffer).resize({ width: 500, height: 500 }).png().toBuffer();
+
+    const opinion = new Opinion({
+        ...req.body,
+        owner: req.user._id,
+        opinionImage: buffer
+    })
+    try {
+        await opinion.save();
+        res.status(201).send(opinion)
+    } catch (e) {
+        res.status(400).send(e);
+    }
+}, (error, req, res, next) => {
+    res.status(400).send({ error: error.message })
+})
+
+// get opinion image
+router.get('/opinions/:id/opinionImage', async (req, res) => {
+    try {
+        const opinion = await Opinion.findById(req.params.id);
+
+        if (!opinion || !opinion.opinionImage) {
+            throw new Error()
+        }
+
+        res.set('Content-Type', 'image/png');
+        res.send(opinion.opinionImage);
+    } catch (e) {
+        res.status(404).send()
     }
 })
 
