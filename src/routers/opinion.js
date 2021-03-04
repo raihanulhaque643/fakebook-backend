@@ -37,7 +37,7 @@ router.get('/myOpinions', auth, async (req, res) => {
 })
 
 // get an opinion
-router.get('/myopinions/:id', async (req, res) => {
+router.get('/myopinions/:id',auth, async (req, res) => {
     try {
         const opinion = await Opinion.findById(req.params.id);
 
@@ -146,7 +146,7 @@ router.post('/opinions/me', auth, upload.single('opinionImage'), async (req, res
 })
 
 // get opinion image
-router.get('/opinions/:id/opinionImage', async (req, res) => {
+router.get('/opinions/:id/opinionImage', auth, async (req, res) => {
     try {
         const opinion = await Opinion.findById(req.params.id);
 
