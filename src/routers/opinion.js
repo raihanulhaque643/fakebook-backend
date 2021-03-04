@@ -36,6 +36,22 @@ router.get('/myOpinions', auth, async (req, res) => {
     }
 })
 
+// get an opinion
+router.get('/myopinions/:id', async (req, res) => {
+    try {
+        const opinion = await Opinion.findById(req.params.id);
+
+        if (!opinion || !opinion.opinionImage) {
+            throw new Error()
+        }
+
+        // res.set('Content-Type', 'image/png');
+        res.send(opinion);
+    } catch (e) {
+        res.status(404).send()
+    }
+})
+
 // get all opinions of all users
 router.get('/allOpinions', auth, async (req, res) => {
     try {
@@ -117,7 +133,7 @@ router.post('/opinions/me', auth, upload.single('opinionImage'), async (req, res
     const opinion = new Opinion({
         ...req.body,
         owner: req.user._id,
-        opinionImage: buffer
+        opinionImage: buffer,
     })
     try {
         await opinion.save();
