@@ -71,7 +71,7 @@ userSchema.virtual('opinions', {
     foreignField: 'owner'
 })
 
-// remove password and token before returning json data to client
+// remove password before returning json data to client
 userSchema.methods.toJSON = function () {
     const user = this;
     const userObject = user.toObject()
