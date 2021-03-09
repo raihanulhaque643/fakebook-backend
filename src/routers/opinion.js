@@ -155,6 +155,7 @@ router.get('/opinions/:id/opinionImage', async (req, res) => {
         }
 
         res.set('Content-Type', 'image/png');
+        res.set('Access-Control-Allow-Origin', '*')
         res.send(opinion.opinionImage);
     } catch (e) {
         res.status(404).send()
