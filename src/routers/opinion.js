@@ -45,7 +45,7 @@ router.get('/myopinions/:id',auth, async (req, res) => {
             throw new Error()
         }
 
-        // res.set('Content-Type', 'image/png');
+        res.set('Content-Type', 'image/png');
         res.send(opinion);
     } catch (e) {
         res.status(404).send()
