@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const taskSchema = new mongoose.Schema({
+const opinionSchema = new mongoose.Schema({
     description: {
         type: String,
         trim: true,
@@ -37,6 +37,15 @@ const taskSchema = new mongoose.Schema({
     timestamps: true
 });
 
-const Opinion = mongoose.model('Opinion', taskSchema);
+// remove password before returning json data to client
+opinionSchema.methods.toJSON = function () {
+    const opinion = this;
+    const opinionObject = opinion.toObject()
+
+    delete opinionObject.opinionImage;
+    return opinionObject;
+}
+
+const Opinion = mongoose.model('Opinion', opinionSchema);
 
 module.exports = Opinion;
