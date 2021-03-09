@@ -102,6 +102,22 @@ router.get('/users/:id/avatar', async (req, res) => {
     }
 })
 
+// fetch user details
+router.get('/users/:id/details', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id);
+
+        if (!user) {
+            throw new Error()
+        }
+
+        // res.set('Content-Type', 'image/png');
+        res.send(user);
+    } catch (e) {
+        res.status(404).send()
+    }
+})
+
 // test route
 router.post('/test', auth, async (req, res) => {
     res.send('i am authenticated')
