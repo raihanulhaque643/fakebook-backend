@@ -28,6 +28,9 @@ router.get('/myOpinions', auth, async (req, res) => {
             options: {
                 limit: parseInt(req.query.limit),
                 skip: parseInt(req.query.skip),
+                sort: {
+                    'updatedAt': -1
+                }
             }
         }).execPopulate()
         res.send(req.user.opinions);
@@ -55,7 +58,7 @@ router.get('/myopinions/:id',auth, async (req, res) => {
 // get all opinions of all users
 router.get('/allOpinions', auth, async (req, res) => {
     try {
-        const opinions = await Opinion.find({})
+        const opinions = await Opinion.find({}).sort( { updatedAt: -1 } )
         .limit(parseInt(req.query.limit))
         .skip(parseInt(req.query.skip))
         if(!opinions) {
