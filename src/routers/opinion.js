@@ -111,55 +111,52 @@ router.delete('/opinions/:id', auth, async (req, res) => {
     }
 })
 
-// create multer instance
-const upload = multer({
-    limits: {
-        fileSize: 1000000
-    },
-    fileFilter(req, file, cb) {
-        if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-            return cb(new Error('Please upload an image!'))
-        }
+// // create multer instance
+// const upload = multer({
+//     limits: {
+//         fileSize: 1000000
+//     },
+//     fileFilter(req, file, cb) {
+//         if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+//             return cb(new Error('Please upload an image!'))
+//         }
 
-        cb(undefined, true);
-    }
-})
+//         cb(undefined, true);
+//     }
+// })
 
-// post an opinion with image (multi-part form)
-// req.body will contain text fields and req.file will have time image file
-router.post('/opinions/me', auth, upload.single('opinionImage'), async (req, res) => {
-    const buffer = await sharp(req.file.buffer).resize({ width: 500, height: 500 }).png().toBuffer();
+// // post an opinion with image (multi-part form)
+// // req.body will contain text fields and req.file will have time image file
+// router.post('/opinions/me', auth, async (req, res) => {
+//     const opinion = new Opinion({
+//         ...req.body,
+//         owner: req.user._id
+//     })
+//     try {
+//         await opinion.save();
+//         res.status(201).send(opinion)
+//     } catch (e) {
+//         res.status(400).send(e);
+//     }
+// }, (error, req, res, next) => {
+//     res.status(400).send({ error: error.message })
+// })
 
-    const opinion = new Opinion({
-        ...req.body,
-        owner: req.user._id,
-        opinionImage: buffer,
-    })
-    try {
-        await opinion.save();
-        res.status(201).send(opinion)
-    } catch (e) {
-        res.status(400).send(e);
-    }
-}, (error, req, res, next) => {
-    res.status(400).send({ error: error.message })
-})
+// // get opinion image
+// router.get('/opinions/:id/opinionImage', async (req, res) => {
+//     try {
+//         const opinion = await Opinion.findById(req.params.id);
 
-// get opinion image
-router.get('/opinions/:id/opinionImage', async (req, res) => {
-    try {
-        const opinion = await Opinion.findById(req.params.id);
+//         if (!opinion || !opinion.opinionImage) {
+//             throw new Error()
+//         }
 
-        if (!opinion || !opinion.opinionImage) {
-            throw new Error()
-        }
-
-        res.set('Content-Type', 'image/png');
-        res.set('Access-Control-Allow-Origin', '*')
-        res.send(opinion.opinionImage);
-    } catch (e) {
-        res.status(404).send()
-    }
-})
+//         res.set('Content-Type', 'image/png');
+//         res.set('Access-Control-Allow-Origin', '*')
+//         res.send(opinion.opinionImage);
+//     } catch (e) {
+//         res.status(404).send()
+//     }
+// })
 
 module.exports = router

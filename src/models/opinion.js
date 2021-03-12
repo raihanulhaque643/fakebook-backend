@@ -6,8 +6,11 @@ const opinionSchema = new mongoose.Schema({
         trim: true,
         required: true
     },
-    opinionImage: {
-        type: Buffer
+    url: {
+        type: String
+    },
+    imageId: {
+        type: String
     },
     agree: [
         {
@@ -42,7 +45,6 @@ opinionSchema.methods.toJSON = function () {
     const opinion = this;
     const opinionObject = opinion.toObject()
 
-    delete opinionObject.opinionImage;
     return opinionObject;
 }
 
