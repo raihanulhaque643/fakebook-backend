@@ -71,18 +71,6 @@ userSchema.virtual('opinions', {
     foreignField: 'owner'
 })
 
-userSchema.virtual('opinions', {
-    ref: 'Opinion',
-    localField: 'firstName',
-    foreignField: 'firstName'
-})
-
-userSchema.virtual('opinions', {
-    ref: 'Opinion',
-    localField: 'lastName',
-    foreignField: 'lastName'
-})
-
 // remove password before returning json data to client
 userSchema.methods.toJSON = function () {
     const user = this;

@@ -30,14 +30,14 @@ router.get('/myOpinions', auth, async (req, res) => {
             options: {
                 limit: parseInt(req.query.limit),
                 skip: parseInt(req.query.skip),
-                sort: {
-                    'updatedAt': -1
-                }
+                // sort: {
+                //     'updatedAt': -1
+                // }
             }
         }).execPopulate()
         res.send(req.user.opinions);
     } catch (e) {
-        res.status(500).send();
+        res.status(500).send({e});
     }
 })
 
@@ -68,7 +68,7 @@ router.get('/allOpinions', auth, async (req, res) => {
         }
         res.send(opinions)
     } catch (e) {
-        res.status(500).send();
+        res.status(500).send({e});
     }
 })
 
