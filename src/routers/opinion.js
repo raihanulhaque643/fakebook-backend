@@ -10,7 +10,9 @@ const sharp = require('sharp')
 router.post('/opinions', auth, async (req, res) => {
     const opinion = new Opinion({
         ...req.body,
-        owner: req.user._id
+        owner: req.user._id,
+        firstName: req.user.firstName,
+        lastName: req.user.lastName
     })
     try {
         await opinion.save();

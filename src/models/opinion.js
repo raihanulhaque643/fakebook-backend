@@ -35,6 +35,16 @@ const opinionSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'Opinion'
+    },
+    firstName: {
+        type: String,
+        required: true,
+        ref: 'Opinion'
+    },
+    lastName: {
+        type: String,
+        required: true,
+        ref: 'Opinion'
     }
 }, {
     timestamps: true
