@@ -1,5 +1,6 @@
 const express = require('express')
 require('./db/mongoose')
+require('./firebase/config')
 const userRouter = require('./routers/user')
 const opinionRouter = require('./routers/opinion')
 

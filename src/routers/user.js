@@ -4,6 +4,8 @@ const User = require('../models/user')
 const auth = require('../middleware/auth');
 const multer = require('multer');
 const sharp = require('sharp');
+const admin = require('firebase-admin')
+const firebase = require('firebase')
 
 // register new users to database
 router.post('/signup', async (req, res) => {
@@ -11,7 +13,10 @@ router.post('/signup', async (req, res) => {
     try {
         await user.save();
         const token = await user.generateAuthToken();
-        res.status(201).send({ user, token });
+        const customToken = await admin.auth().createCustomToken(req.body.email)
+        const firebaseCredentials = await firebase.auth().signInWithCustomToken(customToken)
+        const firebaseUser = firebaseCredentials.user
+        res.status(201).send({ user, token, firebaseUser });
     } catch (e) {
         res.status(400).send(e);
     }
@@ -22,7 +27,10 @@ router.post('/signin', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.email, req.body.password);
         const token = await user.generateAuthToken();
-        res.send({ user, token });
+        const customToken = await admin.auth().createCustomToken(req.body.email)
+        const firebaseCredentials = await firebase.auth().signInWithCustomToken(customToken)
+        const firebaseUser = firebaseCredentials.user
+        res.send({ user, token, firebaseUser });
     } catch (err) {
         res.status(400).send({error: err.message});
     }
@@ -34,6 +42,7 @@ router.post('/logout', auth, async (req, res) => {
         req.user.tokens = req.user.tokens.filter((token) => {
             return token.token !== req.token;
         })
+        await firebase.auth().signOut();
         await req.user.save();
 
         res.send();
@@ -46,6 +55,7 @@ router.post('/logout', auth, async (req, res) => {
 router.post('/logoutAll', auth, async (req, res) => {
     try {
         req.user.tokens = [];
+        await firebase.auth().signOut();
         await req.user.save();
 
         res.send();
