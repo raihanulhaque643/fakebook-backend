@@ -14,7 +14,6 @@ router.post('/signup', async (req, res) => {
         await user.save();
         const token = await user.generateAuthToken();
         const customToken = await admin.auth().createCustomToken(req.body.email)
-        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
         const firebaseCredentials = await firebase.auth().signInWithCustomToken(customToken)
         const firebaseUser = firebaseCredentials.user
         res.status(201).send({ user, token, firebaseUser });
@@ -29,7 +28,6 @@ router.post('/signin', async (req, res) => {
         const user = await User.findByCredentials(req.body.email, req.body.password);
         const token = await user.generateAuthToken();
         const customToken = await admin.auth().createCustomToken(req.body.email)
-        firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
         const firebaseCredentials = await firebase.auth().signInWithCustomToken(customToken)
         const firebaseUser = firebaseCredentials.user
         res.send({ user, token, firebaseUser });
