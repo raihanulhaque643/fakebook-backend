@@ -126,7 +126,6 @@ router.patch('/opinion/agree/:id', auth, async (req, res) => {
             return res.status(404).send();
         }
 
-        // const _userId = req.body.userId;
         const _userId = req.user._id;
         if(opinion.agree.includes(_userId)) {
             res.status(403).send('user already agreed to this');
@@ -155,14 +154,15 @@ router.patch('/opinion/disagree/:id', auth, async (req, res) => {
             return res.status(404).send();
         }
 
-        const _userId = req.body.userId;
+        const _userId = req.user._id;
         if(opinion.disagree.includes(_userId)) {
+            res.status(403).send('user already disagreed to this');
             return
         } else if(opinion.agree.includes(_userId)) {
-            agree.filter(item => item ===_userId )
-            disagree.unshift(_userId)
+            opinion.agree.filter(item => item ===_userId )
+            opinion.disagree.unshift(_userId)
         } else {
-            disagree.unshift(_userId)
+            opinion.disagree.unshift(_userId)
         }
         
         await opinion.save();
