@@ -131,7 +131,9 @@ router.patch('/opinion/agree/:id', auth, async (req, res) => {
             res.status(403).send('user already agreed to this');
             return
         } else if(opinion.disagree.includes(_userId)) {
-            opinion.disagree.filter(item => item !== _userId )
+            // opinion.disagree.filter(item => item !== _userId )
+            const ind = opinion.disagree.indexOf(_userId)
+            if(ind > -1) opinion.disagree.splice(ind, 1)
             opinion.agree.unshift(_userId)
         } else {
             opinion.agree.unshift(_userId)
@@ -159,7 +161,9 @@ router.patch('/opinion/disagree/:id', auth, async (req, res) => {
             res.status(403).send('user already disagreed to this');
             return
         } else if(opinion.agree.includes(_userId)) {
-            opinion.agree.filter(item => item !== _userId )
+            // opinion.agree.filter(item => item !== _userId )
+            const ind = opinion.agree.indexOf(_userId)
+            if(ind > -1) opinion.agree.splice(ind, 1)
             opinion.disagree.unshift(_userId)
         } else {
             opinion.disagree.unshift(_userId)
