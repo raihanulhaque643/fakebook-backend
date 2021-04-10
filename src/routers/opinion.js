@@ -128,17 +128,14 @@ router.patch('/opinion/agree/:id', auth, async (req, res) => {
 
         // const _userId = req.body.userId;
         const _userId = req.user._id;
-        // if(opinion.agree.includes(_userId)) {
-        //     return
-        // } else if(opinion.disagree.includes(_userId)) {
-        //     disagree.filter(item => item === _userId )
-        //     agree.unshift(_userId)
-        // } else {
-        //     agree.unshift(_userId)
-        // }
-
-        agree.unshift(_userId)
-
+        if(opinion.agree.includes(_userId)) {
+            return
+        } else if(opinion.disagree.includes(_userId)) {
+            opinion.disagree.filter(item => item === _userId )
+            opinion.agree.unshift(_userId)
+        } else {
+            opinion.agree.unshift(_userId)
+        }
 
         await opinion.save();
         res.send(opinion);
