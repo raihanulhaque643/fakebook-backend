@@ -116,6 +116,60 @@ router.delete('/opinions/:id', auth, async (req, res) => {
     }
 })
 
+// agree to an opinion
+router.patch('/opinion/agree/:id', auth, async (req, res) => {
+    const _id = req.params.id;
+    try {
+        const opinion = await Opinion.findOne({ _id: req.params.id })
+        
+        if (!opinion) {
+            return res.status(404).send();
+        }
+
+        const _userId = req.body.userId;
+        if(opinion.agree.includes(_userId)) {
+            return
+        } else if(opinion.disagree.includes(_userId)) {
+            disagree.filter(item => item ===_userId )
+            agree.unshift(_userId)
+        } else {
+            agree.unshift(_userId)
+        }
+
+        await opinion.save();
+        res.send(opinion);
+    } catch (e) {
+        res.status(400).send(e);
+    }   
+})
+
+// disagree to an opinion
+router.patch('/opinion/disagree/:id', auth, async (req, res) => {
+    const _id = req.params.id;
+    try {
+        const opinion = await Opinion.findOne({ _id: req.params.id })
+        
+        if (!opinion) {
+            return res.status(404).send();
+        }
+
+        const _userId = req.body.userId;
+        if(opinion.disagree.includes(_userId)) {
+            return
+        } else if(opinion.agree.includes(_userId)) {
+            agree.filter(item => item ===_userId )
+            disagree.unshift(_userId)
+        } else {
+            disagree.unshift(_userId)
+        }
+        
+        await opinion.save();
+        res.send(opinion);
+    } catch (e) {
+        res.status(400).send(e);
+    }   
+})
+
 // // create multer instance
 // const upload = multer({
 //     limits: {
