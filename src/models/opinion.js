@@ -12,18 +12,8 @@ const opinionSchema = new mongoose.Schema({
     imageId: {
         type: String
     },
-    agree: [
-        {
-            user: String,
-            date: Date
-        }
-    ],
-    disagree: [
-        {
-            user: String,
-            date: Date
-        }
-    ],
+    agree: [],
+    disagree: [],
     comments: [
         {
             author: String,
