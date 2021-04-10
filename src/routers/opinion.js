@@ -129,6 +129,7 @@ router.patch('/opinion/agree/:id', auth, async (req, res) => {
         // const _userId = req.body.userId;
         const _userId = req.user._id;
         if(opinion.agree.includes(_userId)) {
+            res.status(403).send('user already agreed to this');
             return
         } else if(opinion.disagree.includes(_userId)) {
             opinion.disagree.filter(item => item === _userId )
