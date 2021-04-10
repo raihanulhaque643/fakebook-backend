@@ -126,7 +126,8 @@ router.patch('/opinion/agree/:id', auth, async (req, res) => {
             return res.status(404).send();
         }
 
-        const _userId = req.body.userId;
+        // const _userId = req.body.userId;
+        const _userId = req.user._id;
         if(opinion.agree.includes(_userId)) {
             return
         } else if(opinion.disagree.includes(_userId)) {
